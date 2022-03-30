@@ -60,7 +60,8 @@ holiday(){
 
 }
 
-
+#=============unixOffset function=============
+# Puropse: Computes unix time equivalent of today's date + offset. Validates result
 unixOffset(){
     newUnixDate=$(( $1 + ( $2 * 86400 ) ))
     #|| [ "$2" -ge "20000" ] || "$2" -le "-20000" ]
@@ -73,29 +74,17 @@ unixOffset(){
 }
 
 # Perform welcome message
-user=$(whoami)
-echo "Hello $user"
-unixDay=$(date +%s)
+status="GO"
+while [ "$status" != "STOP" ]
+do
+    user=$(whoami)
+    echo "Hello $user"
+    unixDay=$(date +%s)
 
-# Compute current date
-todaysDate=$(date -d @"$unixDay")
-echo "The current date is: $todaysDate"
-
-
-if [ $1 ]; then
-    newOffset=$(( $unixDay + ( $1 * 86400 ) ))
-    unixOffset unixDay $1 #TODO: Get offset to work.
-    dateToday=$(date -d @"$newUnixDate")
-    unixOffsetDay=$newUnixDate
-    echo "offset: $unixOffsetDay"
-    echo "Offset by $1 days, the date is $dateToday"
-else
+    # Compute current date
     todaysDate=$(date -d @"$unixDay")
-    # echo "The current date is: $todaysDate"
-fi
-
-# Call greet
-greet
+    
+    greet
 
 # Handles leap year
 nextYear=0
@@ -103,7 +92,6 @@ if [ "$day" == "29" ] && ( [ "$month" == "02" ] || [ "$month" == "2" ] ); then
     echo "Leap year entered. This date is not valid. Try a different birthday :)"
     exit 1
 fi
-
 
 # Call unixTimeStamp
 if [ $1 ]; then
@@ -140,4 +128,8 @@ else
     birthDay=$(date -d "@$unixTime" '+%m-%d')
     holiday $currentDay $birthDay
 fi
+
+    echo "Type STOP if you would like to stop. Press enter to continue."
+    read status
+done
 
