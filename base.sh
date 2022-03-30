@@ -16,13 +16,29 @@ greet(){
     echo "Enter your month of birth (MM):"
     read month
     # error handle invalid dates
-    if [ "$day" -gy "31" ] || [ "$month" -gy "12" ]; then
+    if [ "$day" -gt "31" ] || [ "$month" -gt "12" ]; then
         printf "Error: Please enter a valid day and month that appears on your calendar!\n"
         exit 1
     fi
     year=$(date +"%Y")
 
 }
+
+#=============holiday function=============
+# Puropse: Prints holiday message if current day is a holiday
+holiday(){
+    currentDay=$(date -d "today" '+%m-%d')
+    if [ "$currentDay" == "12-25" ]; then
+        echo "It's a holiday! Merry Christmas!"
+    elif [ "$currentDay" == "10-31" ]; then
+        echo "It's a holiday! Happy Halloween!"
+    elif [ "$currentDay" == "03-17" ]; then
+        echo "It's a holiday! Happy Saint Pats!"
+    elif ["$currentDay" == "07-1" ]; then
+        echo "It's a holiday! Happy Canada Day!"
+    fi
+}
+
 
 # Perform welcome message
 user=$(whoami)
@@ -54,10 +70,17 @@ unixTimeStamp $month $day $year
 
 # echo "$unixTime"
 difference=$(( ( $unixTime - $unixDay ) / 86400 ))
-if [ "$difference" -le "0" ]; then
+
+if [ "$difference" == "0" ]; then
+    echo "Happy birthday to you!"
+elif [ "$difference" -le "0" ]; then
     newDate=$(( 365 + $difference ))
     echo "Your birthday will be in $newDate days"
 else
     echo "Your birthday will be in $difference days"
 fi
+
+#Check for holidays
+holiday
+
 #Feature 1
