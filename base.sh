@@ -15,6 +15,8 @@ greet(){
     read day
     echo "Enter your month of birth (MM):"
     read month
+    echo "Enter your year of birth (YYYY):"
+    read birthYear
     # error handle invalid dates
     if [ "$day" -gt "31" ] || [ "$month" -gt "12" ]; then
         printf "Error: Please enter a valid day and month that appears on your calendar!\n"
@@ -28,6 +30,8 @@ greet(){
 # Puropse: Prints holiday message if current day is a holiday
 holiday(){
     currentDay=$1
+    unixTimeStamp $month $day $birthYear
+    ageUnix=$(( ( $unixDay - $unixTime ) / 31536000 )) #60*60*24*365 31536000
     if [ "$currentDay" == "12-25" ]; then
         echo "It's a holiday! Merry Christmas!"
     elif [ "$currentDay" == "10-31" ]; then
@@ -41,12 +45,16 @@ holiday(){
     if [ $2 ]; then
         if [ "$2" == "12-25" ]; then
             echo "Your birthday is a holiday! Merry Christmas!"
+            echo "You are $ageUnix years old!"
         elif [ "$2" == "10-31" ]; then
             echo "Your birthday is a holiday! Happy Halloween!"
+            echo "You are $ageUnix years old!"
         elif [ "$2" == "03-17" ]; then
             echo "Your birthday is a holiday! Happy Saint Pats!"
+            echo "You are $ageUnix years old!"
         elif [ "$2" == "07-1" ]; then
             echo "Your birthday is a holiday! Happy Canada Day!"
+            echo "You are $ageUnix years old!"
         fi
     fi
 
@@ -112,7 +120,9 @@ else
 
 fi
 if [ "$difference" == "0" ]; then
-    echo "Happy birthday to you!"
+    unixTimeStamp $month $day $birthYear
+    ageUnix=$(( ( $unixDay - $unixTime ) / 31536000 )) #60*60*24*365 31536000
+    echo "Happy birthday to you! You are $ageUnix years old!"
 elif [ "$difference" -lt "0" ]; then
     newDate=$(( 365 + $difference ))
     echo "Your birthday will be in $newDate days"
@@ -131,4 +141,3 @@ else
     holiday $currentDay $birthDay
 fi
 
-#Feature 1
