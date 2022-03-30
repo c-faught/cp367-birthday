@@ -65,70 +65,74 @@ unixOffset(){
 }
 
 # Perform welcome message
-user=$(whoami)
-echo "Hello $user"
-unixDay=$(date +%s)
+status="GO"
+while [ "$status" != "STOP" ]
+do
+    user=$(whoami)
+    echo "Hello $user"
+    unixDay=$(date +%s)
 
-# Compute current date
-todaysDate=$(date -d @"$unixDay")
-echo "The current date is: $todaysDate"
-
-
-if [ $1 ]; then
-    newOffset=$(( $unixDay + ( $1 * 86400 ) ))
-    unixOffset unixDay $1 #TODO: Get offset to work.
-    dateToday=$(date -d @"$newUnixDate")
-    unixOffsetDay=$newUnixDate
-    echo "offset: $unixOffsetDay"
-    echo "Offset by $1 days, the date is $dateToday"
-else
+    # Compute current date
     todaysDate=$(date -d @"$unixDay")
-    # echo "The current date is: $todaysDate"
-fi
-
-# Call greet
-greet
-
-# Handles leap year
-nextYear=0
-if [ "$day" == "29" ] && ( [ "$month" == "02" ] || [ "$month" == "2" ] ); then
-    echo "Leap year entered. This date is not valid. Try a different birthday :)"
-    exit 1
-fi
+    echo "The current date is: $todaysDate"
 
 
-# Call unixTimeStamp
-if [ $1 ]; then
-    offsetYear=$(date -d "@$unixOffsetDay" '+%Y')
-    unixTimeStamp $month $day $offsetYear
-else
-    unixTimeStamp $month $day $year
-fi
-# echo "$unixTime"
-if [ $1 ]; then
-    difference=$(( ( $unixTime - $unixOffsetDay ) / 86400 ))
-else
-    difference=$(( ( $unixTime - $unixDay ) / 86400 ))
+    if [ $1 ]; then
+        newOffset=$(( $unixDay + ( $1 * 86400 ) ))
+        unixOffset unixDay $1 #TODO: Get offset to work.
+        dateToday=$(date -d @"$newUnixDate")
+        unixOffsetDay=$newUnixDate
+        echo "offset: $unixOffsetDay"
+        echo "Offset by $1 days, the date is $dateToday"
+    else
+        todaysDate=$(date -d @"$unixDay")
+        # echo "The current date is: $todaysDate"
+    fi
 
-fi
-if [ "$difference" == "0" ]; then
-    echo "Happy birthday to you!"
-elif [ "$difference" -lt "0" ]; then
-    newDate=$(( 365 + $difference ))
-    echo "Your birthday will be in $newDate days"
-else
-    echo "Your birthday will be in $difference days"
-fi
+    # Call greet
+    greet
 
-#Check for holidays
-if [ $1 ]; then
-    currentDay=$(date -d "@$unixOffsetDay" '+%m-%d')
-    birthDay=$(date -d "@$unixTime" '+%m-%d')
-    holiday $currentDay $birthDay
-else
-    currentDay=$(date -d "today" '+%m-%d')
-    birthDay=$(date -d "@$unixTime" '+%m-%d')
-    holiday $currentDay $birthDay
-fi
+    # Handles leap year
+    nextYear=0
+    if [ "$day" == "29" ] && ( [ "$month" == "02" ] || [ "$month" == "2" ] ); then
+        echo "Leap year entered. This date is not valid. Try a different birthday :)"
+        exit 1
+    fi
 
+    # Call unixTimeStamp
+    if [ $1 ]; then
+        offsetYear=$(date -d "@$unixOffsetDay" '+%Y')
+        unixTimeStamp $month $day $offsetYear
+    else
+        unixTimeStamp $month $day $year
+    fi
+    # echo "$unixTime"
+    if [ $1 ]; then
+        difference=$(( ( $unixTime - $unixOffsetDay ) / 86400 ))
+    else
+        difference=$(( ( $unixTime - $unixDay ) / 86400 ))
+
+    fi
+    if [ "$difference" == "0" ]; then
+        echo "Happy birthday to you!"
+    elif [ "$difference" -lt "0" ]; then
+        newDate=$(( 365 + $difference ))
+        echo "Your birthday will be in $newDate days"
+    else
+        echo "Your birthday will be in $difference days"
+    fi
+
+    #Check for holidays
+    if [ $1 ]; then
+        currentDay=$(date -d "@$unixOffsetDay" '+%m-%d')
+        birthDay=$(date -d "@$unixTime" '+%m-%d')
+        holiday $currentDay $birthDay
+    else
+        currentDay=$(date -d "today" '+%m-%d')
+        birthDay=$(date -d "@$unixTime" '+%m-%d')
+        holiday $currentDay $birthDay
+    fi
+    echo "Type STOP if you would like to stop. Press enter to continue."
+    read status
+done
 #Feature 1
