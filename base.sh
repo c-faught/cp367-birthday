@@ -3,10 +3,8 @@
 #=============unixTimestamp function=============
 # Puropse: Computes unix date with provided input
 unixTimeStamp(){
-    # if [ "$1" == "2" ] ||;
     date=$1"/"$2"/"$3" 12:00:00"
     unixTime=$(date --date="$date" +"%s")
-    echo "$unixTime"
 
 }
 #=============greet function=============
@@ -29,7 +27,7 @@ greet(){
 #=============holiday function=============
 # Puropse: Prints holiday message if current day is a holiday
 holiday(){
-    currentDay=$(date -d "today" '+%m-%d')
+    currentDay=$1
     if [ "$currentDay" == "12-25" ]; then
         echo "It's a holiday! Merry Christmas!"
     elif [ "$currentDay" == "10-31" ]; then
@@ -38,6 +36,18 @@ holiday(){
         echo "It's a holiday! Happy Saint Pats!"
     elif [ "$currentDay" == "07-1" ]; then
         echo "It's a holiday! Happy Canada Day!"
+    fi
+    
+    if [ $2 ]; then
+        if [ "$2" == "12-25" ]; then
+            echo "Your birthday is a holiday! Merry Christmas!"
+        elif [ "$2" == "10-31" ]; then
+            echo "Your birthday is a holiday! Happy Halloween!"
+        elif [ "$2" == "03-17" ]; then
+            echo "Your birthday is a holiday! Happy Saint Pats!"
+        elif [ "$2" == "07-1" ]; then
+            echo "Your birthday is a holiday! Happy Canada Day!"
+        fi
     fi
 
 }
@@ -49,7 +59,7 @@ unixOffset(){
     upperYear=$(date -d "+15 years" +%s)
     lowerYear=$(date -d "-15 years" +%s)
     if [ "$newUnixDate" -ge "$upperYear" ] || [ "$newUnixDate" -le "$lowerYear" ]; then
-        echo "Error: Offset too large. Please ensure the date is within 15 years."
+        echo "Error: Offset too large. Please ensure the date is within the 21st century."
         exit 1
     fi
 }
@@ -86,6 +96,7 @@ if [ "$day" == "29" ] && ( [ "$month" == "02" ] || [ "$month" == "2" ] ); then
     exit 1
 fi
 
+
 # Call unixTimeStamp
 if [ $1 ]; then
     offsetYear=$(date -d "@$unixOffsetDay" '+%Y')
@@ -110,7 +121,14 @@ else
 fi
 
 #Check for holidays
-holiday
-
+if [ $1 ]; then
+    currentDay=$(date -d "@$unixOffsetDay" '+%m-%d')
+    birthDay=$(date -d "@$unixTime" '+%m-%d')
+    holiday $currentDay $birthDay
+else
+    currentDay=$(date -d "today" '+%m-%d')
+    birthDay=$(date -d "@$unixTime" '+%m-%d')
+    holiday $currentDay $birthDay
+fi
 
 #Feature 1
